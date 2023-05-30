@@ -1,0 +1,44 @@
+package XMLanalizadoxml;
+import java_cup.runtime.*;
+
+/* Definición de símbolos terminales */
+terminal INT, DOUBLE, STRING, LLA, LLC, CA, CC, DP, COMMA, COMILLA, IGUAL, PYC, PLUS, PRO, ID, NUM, DECIMAL,
+        XML_START, XML_END, LT, GT, CLOSING_TAG, SELF_CLOSING_TAG, EQUALS, QUOTE;
+
+/* Definición de símbolos no terminales */
+non terminal program, statement_list, statement, variableDeclaration, type, assignment, expression, value, tag, attribute;
+
+/* Precedencia y asociatividad de operadores */
+precedence left PLUS;
+precedence left PRO;
+
+/* Definición de la gramática */
+start with program;
+
+program ::= statement_list {: System.out.println("Program parsed successfully."); :};
+
+statement_list ::= statement {: System.out.println("Statement: " + $1); :}
+                   | statement_list statement {: System.out.println("Statement: " + $2); :};
+
+statement ::= variableDeclaration
+              | assignment;
+
+variableDeclaration ::= type ID PYC {: System.out.println("Variable Declaration: " + $2); :};
+
+type ::= INT {: System.out.println("Type: int"); :}
+        | DOUBLE {: System.out.println("Type: double"); :}
+        | STRING {: System.out.println("Type: String"); :};
+
+assignment ::= ID IGUAL expression PYC {: System.out.println("Assignment: " + $1 + " = " + $3); :};
+
+expression ::= expression PLUS expression {: System.out.println("Expression: " + $1 + " + " + $3); :}
+                | expression PRO expression {: System.out.println("Expression: " + $1 + " * " + $3); :}
+                | value;
+
+value ::= ID {: System.out.println("Value: " + $1); :}
+            | NUM {: System.out.println("Value: " + $1); :}
+            | DECIMAL {: System.out.println("Value: " + $1); :};
+
+tag ::= LT ID GT {: System.out.println("Tag: <" + $2 + ">"); :};
+
+attribute ::= ID EQUALS QUOTE value QUOTE {: System.out.println("Attribute: " + $1 + " = " + $4); :};
